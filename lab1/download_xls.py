@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 # raw data files to parse, <source file prefix, parent file, target file prefix>
 data_files = {
     ('http://prezydent2000.pkw.gov.pl/gminy/', 'raw_data/html/gminy.html', 'raw_data/xls/gminy/'),
-    ('http://prezydent2000.pkw.gov.pl/obwody/', 'raw_data/html/gminy.html', 'raw_data/xls/obwody/'),
+    ('http://prezydent2000.pkw.gov.pl/gminy/', 'raw_data/html/obwody.html', 'raw_data/xls/'),
 }
 
 
