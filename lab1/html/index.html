@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>[Demo] Testing styles</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="height=device-height, initial-scale=1.0">
+
+    <!-- 3rd party CSS -->
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/hamburgers.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!--Lato Google Font, weights: 300, 400, 900-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,900" rel="stylesheet">
+    <!--TODO: Load fonts locally, bundle css js and images-->
+</head>
+<body>
+
+<div class="container">
+
+    <header class="kk-full-header">
+        <div class="kk-header-top-bar">
+
+            <button id="hamburger-menu-btn"
+                    class="hamburger hamburger--collapse"
+                    type="button">
+              <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+              </span>
+            </button>
+
+        </div>
+        <div class="kk-header-main-tile">
+
+            <h1>Wybory Prezydenta RP<br> 2000</h1>
+
+        </div>
+        <div class="kk-header-bottom-tile">
+
+            <a href="#wyniki" id="see-results-btn" class="kk-action-btn">Zobacz wyniki</a>
+            <!--TODO: Scorll animation-->
+
+        </div>
+    </header>
+
+    <section id="wyniki" class="last">
+        <h3>Lorem ipsum dolor sit amet.</h3>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            A ad aperiam blanditiis dolorem, eius esse et hic in iusto omnis porro
+            quidem rem sunt suscipit unde voluptas voluptate, voluptates? Maxime?
+        </p>
+
+        <div class="chart">
+            <canvas id="TEST"></canvas>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>
+            © 2018
+            <a href="https://github.com/kowaalczyk">
+                Krzysztof Kowalczyk
+            </a>
+            <br>
+            Created for WWW Applications assignment, University of Warsaw spring semester 2017-18.
+        </p>
+    </footer>
+</div>
+
+    <!-- 3rd party JS -->
+    <script>window.noZensmooth = true; /* control scrolling manually*/</script>
+    <script src="../js/zenscroll-min.js"></script>
+    <script src="../js/Chart.bundle.min.js"></script>
+
+    <!-- Main JS -->
+    <script src="../js/charts.js"></script>
+    <script src="../js/animations.js"></script>
+</body>
+</html>
