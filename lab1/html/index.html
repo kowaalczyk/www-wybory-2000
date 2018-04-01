@@ -20,12 +20,18 @@
 </head>
 <body class="kk-flex-body">
     <div class="kk-content kk-container">
+
+        <!-- PAGE TITLE -->
+
         <header class="kk-block-vmargin">
             <h1 class="kk-bar-after">
                 Wybory prezydenta RP 2000
             </h1>
         </header>
         <section class="kk-block-vmargin">
+
+            <!-- CONTENT TITLE -->
+
             <h2 class="kk-block-tmargin kk-result">
                 <span id="result-name">
                     Kraków
@@ -35,6 +41,8 @@
                     Gmina, powiat Kraków, woj. Małopolskie
                 </span>
             </h2>
+
+            <!-- CONTENT (GRAPH AND SWITCHES) -->
 
             <div class="kk-block-tmargin chart">
                 <canvas id="TEST"></canvas>
@@ -50,18 +58,85 @@
             </div>
         </section>
     </div>
+
     <footer class="kk-footer">
-        <div class="kk-container kk-horizontal kk-btns-tight">
-            <a href="#!" class="kk-btn kk-btn-tall" id="filter">
-            Filtruj wyniki
-            </a>
-            <a href="#!" class="kk-btn kk-btn-tall" id="search">
-                Wyszukaj
-            </a>
-            <a href="#!" class="kk-btn kk-btn-tall" id="menu">
-                Menu
-            </a>
+        <div class="kk-container">
+
+            <!-- MENU BUTTONS -->
+
+            <div class="kk-horizontal kk-btns-tight">
+                <a href="#!" class="kk-btn kk-btn-tall" id="filter-btn">
+                    Filtruj wyniki
+                </a>
+                <a href="#!" class="kk-btn kk-btn-tall" id="search-btn">
+                    Wyszukaj
+                </a>
+                <a href="#!" class="kk-btn kk-btn-tall" id="menu-btn">
+                    Menu
+                </a>
+            </div>
+
+            <!-- MENU EXPANDABLE LISTS -->
+
+            <div id="menu-content" class="kk-container kk-expandable">
+                <ul class="kk-list">
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            Wyniki zbiorcze
+                        </a>
+                    </li>
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            Wyniki krajowe
+                        </a>
+                    </li>
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            Wyniki zagraniczne
+                        </a>
+                    </li>
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            Województwa
+                        </a>
+                    </li>
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            O aplikacji
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </footer>
+
+    <!--<div id="filter-content">-->
+
+    <!--</div>-->
+
+    <!--<div id="search-content">-->
+
+    <!--</div>-->
+
+    <!--<div id="menu-content">-->
+        <!--<ul class="kk-list">-->
+            <!--<li>-->
+                <!--Wyniki zbiorcze-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--Wyniki krajowe-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--Wyniki zagraniczne-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--Województwa-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--O aplikacji-->
+            <!--</li>-->
+        <!--</ul>-->
+    <!--</div>-->
+
 </body>
 </html>

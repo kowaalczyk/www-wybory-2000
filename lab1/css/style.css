@@ -14,6 +14,7 @@
     --kk-small-vertical: 0.5vh;
     --kk-medium-vertical: 2vh;
     --kk-big-vertical: 4vh;  /* for iphone x <3 */
+    --kk-border-width: 2px;
 
     /* layout computed */
     --kk-footer-height: calc(
@@ -21,6 +22,10 @@
             var(--kk-big-vertical) +
             2 * var(--kk-line-height-default) * var(--kk-font-size-default)
     );
+    --kk-li-height: calc(
+            2 * var(--kk-line-height-default) * var(--kk-font-size-default)
+    );
+    --kk-btn-border: var(--kk-border-width) solid var(--kk-dark-bg-color);
 }
 
 /* GLOBAL */
@@ -40,7 +45,7 @@ body {
     height: 100vh;
 }
 
-header, section {
+header, section, ul, li {
     display: block;
 }
 
@@ -93,9 +98,9 @@ body.kk-flex-body {
 .kk-footer {
     position: fixed;
     bottom: 0;
-    max-height: var(--kk-footer-height);
+    height: var(--kk-footer-height);
     width: 100vw;
-    overflow: hidden;
+    overflow: visible; /* for displaying menu lists */
     flex-grow: 0;
 }
 
@@ -130,14 +135,16 @@ body.kk-flex-body {
     margin: 0;
     flex-grow: 1;
     flex-basis: 0;
-    border-top: 2px solid var(--kk-dark-bg-color);
+    border-top: var(--kk-btn-border);
 }
 
 .kk-btns-tight > a.kk-btn:not(:last-child) {
-    border-right: 2px solid var(--kk-dark-bg-color);
+    border-right: var(--kk-btn-border);
 }
 
 /* CONTENT STYLE */
+
+/* content */
 
 header > h1 {
     font-size: 2.5rem;
@@ -184,4 +191,24 @@ a.kk-btn-tall {
 a.kk-btn:active, a.kk-btn:hover {
     color: #F4F4F4;
     background-color: var(--kk-dark-bg-color);
+}
+
+/* menus */
+
+.kk-expandable {
+    z-index: 10;
+    position: absolute;
+    bottom: calc(var(--kk-footer-height));
+    left: inherit;
+}
+
+ul.kk-list > li {
+    height: var(--kk-li-height);
+}
+
+a.kk-btn.kk-list-btn {
+    height: inherit;
+    width: inherit;
+    padding: auto;
+    border-top: var(--kk-btn-border);
 }
