@@ -1,0 +1,187 @@
+/* VARIABLES */
+
+:root {
+    /* colors */
+    --kk-main-bg-color: #F4F4F4;
+    --kk-dark-bg-color: #202020;
+    --kk-grey-color: #DDDDDD;
+
+    /* typography */
+    --kk-font-size-default: 1.25rem;
+    --kk-line-height-default: 1.2;
+
+    /* layout basic */
+    --kk-small-vertical: 0.5vh;
+    --kk-medium-vertical: 2vh;
+    --kk-big-vertical: 4vh;  /* for iphone x <3 */
+
+    /* layout computed */
+    --kk-footer-height: calc(
+            var(--kk-medium-vertical) +
+            var(--kk-big-vertical) +
+            2 * var(--kk-line-height-default) * var(--kk-font-size-default)
+    );
+}
+
+/* GLOBAL */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto Mono', monospace;
+    font-size: var(--kk-font-size-default);
+    line-height: 1.0;
+    background: var(--kk-main-bg-color);
+}
+
+body {
+    height: 100vh;
+}
+
+header, section {
+    display: block;
+}
+
+p, pre, a {
+    display: block;
+    text-align: justify;
+    line-height: var(--kk-line-height-default);
+}
+
+/* PSEUDO-ELEMENTS */
+
+.kk-bar-after::after {
+    position: relative;
+    content: " ";
+    width: 67%;
+	height: 0;
+    border-bottom: 4px solid red;
+    margin: var(--kk-medium-vertical) auto 0 auto;
+    display: block;
+}
+
+/* LAYOUT */
+
+/* main layout containers */
+
+body.kk-flex-body {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.kk-container {
+    width: 100vw;
+}
+
+@media (min-width: 1440px) {
+    .kk-container {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+}
+
+.kk-content {
+    padding: var(--kk-big-vertical) 0 calc(var(--kk-big-vertical) + var(--kk-footer-height)) 0;
+    flex-grow: 2;
+}
+
+.kk-footer {
+    position: fixed;
+    bottom: 0;
+    max-height: var(--kk-footer-height);
+    width: 100vw;
+    overflow: hidden;
+    flex-grow: 0;
+}
+
+.kk-footer > * {
+    background-color: var(--kk-grey-color);
+}
+
+/* layout helpers */
+
+.kk-block-vmargin {
+    margin-left: 2vw;
+    margin-right: 2vw;
+}
+
+.kk-block-tmargin {
+    margin-top: var(--kk-medium-vertical);
+}
+
+.kk-horizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.kk-btns-separated > a.kk-btn {
+    margin: 0 0.5vw;
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
+.kk-btns-tight > a.kk-btn {
+    margin: 0;
+    flex-grow: 1;
+    flex-basis: 0;
+    border-top: 2px solid var(--kk-dark-bg-color);
+}
+
+.kk-btns-tight > a.kk-btn:not(:last-child) {
+    border-right: 2px solid var(--kk-dark-bg-color);
+}
+
+/* CONTENT STYLE */
+
+header > h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+    color: #000000;
+}
+
+h2.kk-result > span#result-name {
+    font-size: 3.75rem;
+    text-align: left;
+    color: #000000;
+}
+
+h2.kk-result > span#result-type {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: #F4F4F4;
+    background-color: var(--kk-dark-bg-color);
+}
+
+/* TODO: This is temporary, remove */
+.chart {
+    background-color: #FF0000;
+    width: 100%;
+    min-height: 240px;
+}
+
+a.kk-btn {
+    display: block;
+    min-height: var(--kk-big-vertical);
+    padding: 0.5vmin;
+    text-align: center;
+    text-decoration: none;
+    color: #101010;
+    background-color: var(--kk-grey-color);
+}
+
+a.kk-btn-tall {
+    padding: var(--kk-medium-vertical) 0 var(--kk-big-vertical) 0;
+}
+
+a.kk-btn:active, a.kk-btn:hover {
+    color: #F4F4F4;
+    background-color: var(--kk-dark-bg-color);
+}

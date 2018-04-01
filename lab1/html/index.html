@@ -12,13 +12,56 @@
     <link rel="stylesheet" href="../css/hamburgers.css">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="../css/style_old.css">
+    <link rel="stylesheet" href="../css/style.css">
 
-    <!--Lato Google Font, weights: 300, 400, 900-->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,900" rel="stylesheet">
+    <!--Roboto Mono Google Font, weights: 400, 700-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700" rel="stylesheet">
     <!--TODO: Load fonts locally, bundle css js and images-->
 </head>
-<body>
+<body class="kk-flex-body">
+    <div class="kk-content kk-container">
+        <header class="kk-block-vmargin">
+            <h1 class="kk-bar-after">
+                Wybory prezydenta RP 2000
+            </h1>
+        </header>
+        <section class="kk-block-vmargin">
+            <h2 class="kk-block-tmargin kk-result">
+                <span id="result-name">
+                    Kraków
+                </span>
+                <br>
+                <span id="result-type">
+                    Gmina, powiat Kraków, woj. Małopolskie
+                </span>
+            </h2>
 
+            <div class="kk-block-tmargin chart">
+                <canvas id="TEST"></canvas>
+            </div>
+
+            <div class="kk-block-tmargin kk-horizontal kk-btns-separated">
+                <a class="kk-btn" id="score-percent" href="#!">
+                    Wyniki procentowe
+                </a>
+                <a class="kk-btn" id="score-count" href="#!">
+                    Liczba głosów
+                </a>
+            </div>
+        </section>
+    </div>
+    <footer class="kk-footer">
+        <div class="kk-container kk-horizontal kk-btns-tight">
+            <a href="#!" class="kk-btn kk-btn-tall" id="filter">
+            Filtruj wyniki
+            </a>
+            <a href="#!" class="kk-btn kk-btn-tall" id="search">
+                Wyszukaj
+            </a>
+            <a href="#!" class="kk-btn kk-btn-tall" id="menu">
+                Menu
+            </a>
+        </div>
+    </footer>
 </body>
 </html>
