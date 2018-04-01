@@ -1,8 +1,12 @@
 // *** setup ***
+const animationSettings = {
+    longTime: 385,
+    standardTime: 225,
+    shortTime: 185,
+    scrollOffset: 0
+};
 
-const defaultScrollDuration = 225; //ms
-const defaultScrollOffset = 0; //px
-zenscroll.setup(defaultScrollDuration, defaultScrollOffset);
+zenscroll.setup(animationSettings.standardTime, animationSettings.scrollOffset);
 
 
 // *** hamburger menu animations ***
@@ -28,7 +32,7 @@ seeResultsBtn.addEventListener('mouseup', (e) => {
     e.preventDefault();
     setTimeout(() => {
         seeResultsBtn.classList.remove('is-active');
-    }, 385);
+    }, animationSettings.longTime);
     zenscroll.to(resultsSection);
 });
 

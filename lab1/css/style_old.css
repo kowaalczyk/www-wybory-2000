@@ -35,8 +35,18 @@ header .hamburger.is-active {
     transition-duration: 195ms;
 }
 
+ul.responsive-menu {
+    display: none;
+    flex-direction: column;
+    /* animation */
+    transition-duration: 225ms;
+    transition-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+/* TODO: Horizontal menu for large devices */
+
+
+
 /* FULL PAGE HEADER */
-/*TODO: Styles for desktop*/
 
 header {
     height: 100vh;
@@ -68,7 +78,11 @@ header h1 {
     /*text*/
     text-align: right;
     font-weight: 300;
+    /* TODO: Consider adding background image (uncomment styles) */
+    /*font-weight: 900;*/
     font-size: 3.75rem;
+    /*color: #FFFFFF;*/
+    /*text-shadow: 1px 4px 2px #000000;*/
 }
 
 header a.kk-action-btn {
@@ -104,6 +118,11 @@ header a.kk-action-btn.is-active {
 section {
     padding: 24px 24px;
     background: #F4F4F4;
+}
+@media (min-width: 1440px) {
+    section {
+        padding: 24px 15%;
+    }
 }
 
 section h3 {

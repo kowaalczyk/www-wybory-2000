@@ -15,5 +15,5 @@ Usage:
 1. Specify rules for downloading data in data_files
 2. Run the script
 
-TODO: Generalize script if necessary
-TODO: Refactor
+**TODO: Generalize script if necessary**    
+**TODO: Refactor**

@@ -1,1 +1,4 @@
 .idea
+venv
+lab1/raw_data
+*.zip
