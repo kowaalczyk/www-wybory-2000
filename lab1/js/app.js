@@ -122,7 +122,7 @@ let app = new Vue({
     },
     methods: {
         closeExpandables() {
-            this.expendables = {
+            this.expandables = {
                 menu: false,
                 filter: false,
                 search: false
