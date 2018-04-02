@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>[Demo] Testing styles</title>
@@ -19,124 +19,149 @@
     <!--TODO: Load fonts locally, bundle css js and images-->
 </head>
 <body class="kk-flex-body">
-    <div class="kk-content kk-container">
+    <div id="vue-app">
+        <div class="kk-content kk-container">
 
-        <!-- PAGE TITLE -->
+            <!-- PAGE TITLE -->
 
-        <header class="kk-block-vmargin">
-            <h1 class="kk-bar-after">
-                Wybory prezydenta RP 2000
-            </h1>
-        </header>
-        <section class="kk-block-vmargin">
+            <header class="kk-block-vmargin">
+                <h1 class="kk-bar-after">
+                    Wybory prezydenta RP 2000
+                </h1>
+            </header>
+            <section class="kk-block-vmargin">
 
-            <!-- CONTENT TITLE -->
+                <!-- CONTENT TITLE -->
 
-            <h2 class="kk-block-tmargin kk-result">
+                <h2 class="kk-block-tmargin kk-result">
                 <span id="result-name">
-                    Kraków
+                    {{ scope.name }}
                 </span>
-                <br>
-                <span id="result-type">
-                    Gmina, powiat Kraków, woj. Małopolskie
+                    <br>
+                    <span id="result-type">
+                    {{ scope.type }}, {{ scope.location }}
                 </span>
-            </h2>
+                </h2>
 
-            <!-- CONTENT (GRAPH AND SWITCHES) -->
+                <!-- CONTENT (GRAPH AND SWITCHES) -->
 
-            <div class="kk-block-tmargin chart">
-                <canvas id="TEST"></canvas>
+                <!--<div class="kk-block-tmargin chart">-->
+                    <!--<canvas id="chart"></canvas>-->
+                    <main-chart v-bind:chart-data="chartData"
+                                v-bind:options="chartOptions"
+                                class="kk-block-tmargin chart">
+                    </main-chart>
+                <!--</div>-->
+
+                <div class="kk-block-tmargin kk-horizontal kk-btns-separated">
+                    <a class="kk-btn" id="score-percent" href="#!">
+                        Wyniki procentowe
+                    </a>
+                    <a class="kk-btn" id="score-count" href="#!">
+                        Liczba głosów
+                    </a>
+                </div>
+            </section>
+        </div>
+        <footer class="kk-footer">
+            <div class="kk-container kk-fill-height">
+
+                <!-- MENU BUTTONS -->
+
+                <div class="kk-horizontal kk-btns-tight kk-fill-height">
+                    <a href="#!"
+                       class="kk-btn kk-btn-tall"
+                       id="filter-btn"
+                       @click="toggleExpandable($event, 'filter')">
+                        Filtruj wyniki
+                    </a>
+                    <a href="#!"
+                       class="kk-btn kk-btn-tall"
+                       id="search-btn"
+                       @click="toggleExpandable($event, 'search')">
+                        Wyszukaj
+                    </a>
+                    <a href="#!"
+                       class="kk-btn kk-btn-tall"
+                       id="menu-btn"
+                       @click="toggleExpandable($event, 'menu')">
+                        Menu
+                    </a>
+                </div>
+
+                <!-- MENU EXPANDABLE LISTS -->
+
+                <div id="menu-content"
+                     class="kk-container kk-expandable"
+                     v-bind:class="{visible: expandables.menu}">
+                    <ul class="kk-list">
+                        <li>
+                            <a class="kk-btn kk-list-btn" href="#!">
+                                Wyniki zbiorcze
+                            </a>
+                        </li>
+                        <li>
+                            <a class="kk-btn kk-list-btn" href="#!">
+                                Wyniki krajowe
+                            </a>
+                        </li>
+                        <li>
+                            <a class="kk-btn kk-list-btn" href="#!">
+                                Wyniki zagraniczne
+                            </a>
+                        </li>
+                        <li>
+                            <a class="kk-btn kk-list-btn" href="#!">
+                                Województwa
+                            </a>
+                        </li>
+                        <li>
+                            <a class="kk-btn kk-list-btn" href="#!">
+                                O aplikacji
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="filter-content"
+                     class="kk-container kk-expandable"
+                     v-bind:class="{visible: expandables.filter}">
+                    <ul class="kk-list">
+                        <li>
+                            <a class="kk-btn kk-list-btn" href="#!">
+                                This is not implemented yet :c
+                                <!-- TODO: Implement search -->
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div id="search-content"
+                     class="kk-container kk-expandable"
+                     v-bind:class="{visible: expandables.search}">
+                    <ul class="kk-list">
+                        <li>
+                            <a class="kk-btn kk-list-btn" href="#!">
+                                This is not implemented yet :c
+                                <!-- TODO: Implement search -->
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="kk-block-tmargin kk-horizontal kk-btns-separated">
-                <a class="kk-btn" id="score-percent" href="#!">
-                    Wyniki procentowe
-                </a>
-                <a class="kk-btn" id="score-count" href="#!">
-                    Liczba głosów
-                </a>
-            </div>
-        </section>
+        </footer>
     </div>
 
-    <footer class="kk-footer">
-        <div class="kk-container">
+    <!-- SCRIPTS -->
 
-            <!-- MENU BUTTONS -->
+    <!-- Vue.js library, dev version -->
+    <script src="../js/vue.js"></script>
 
-            <div class="kk-horizontal kk-btns-tight">
-                <a href="#!" class="kk-btn kk-btn-tall" id="filter-btn">
-                    Filtruj wyniki
-                </a>
-                <a href="#!" class="kk-btn kk-btn-tall" id="search-btn">
-                    Wyszukaj
-                </a>
-                <a href="#!" class="kk-btn kk-btn-tall" id="menu-btn">
-                    Menu
-                </a>
-            </div>
+    <!-- Chart.js library and vue wrapper -->
+    <!--<script src="../js/Chart.bundle.min.js"></script>-->
+    <script src="../js/chart-2.7.1.js"></script>
+    <script src="../js/vue-chartjs.js"></script>
 
-            <!-- MENU EXPANDABLE LISTS -->
 
-            <div id="menu-content" class="kk-container kk-expandable">
-                <ul class="kk-list">
-                    <li>
-                        <a class="kk-btn kk-list-btn" href="#!">
-                            Wyniki zbiorcze
-                        </a>
-                    </li>
-                    <li>
-                        <a class="kk-btn kk-list-btn" href="#!">
-                            Wyniki krajowe
-                        </a>
-                    </li>
-                    <li>
-                        <a class="kk-btn kk-list-btn" href="#!">
-                            Wyniki zagraniczne
-                        </a>
-                    </li>
-                    <li>
-                        <a class="kk-btn kk-list-btn" href="#!">
-                            Województwa
-                        </a>
-                    </li>
-                    <li>
-                        <a class="kk-btn kk-list-btn" href="#!">
-                            O aplikacji
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-
-    <!--<div id="filter-content">-->
-
-    <!--</div>-->
-
-    <!--<div id="search-content">-->
-
-    <!--</div>-->
-
-    <!--<div id="menu-content">-->
-        <!--<ul class="kk-list">-->
-            <!--<li>-->
-                <!--Wyniki zbiorcze-->
-            <!--</li>-->
-            <!--<li>-->
-                <!--Wyniki krajowe-->
-            <!--</li>-->
-            <!--<li>-->
-                <!--Wyniki zagraniczne-->
-            <!--</li>-->
-            <!--<li>-->
-                <!--Województwa-->
-            <!--</li>-->
-            <!--<li>-->
-                <!--O aplikacji-->
-            <!--</li>-->
-        <!--</ul>-->
-    <!--</div>-->
-
+    <!-- Main application script for the application -->
+    <script src="../js/app.js"></script>
 </body>
 </html>

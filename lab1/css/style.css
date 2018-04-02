@@ -142,6 +142,10 @@ body.kk-flex-body {
     border-right: var(--kk-btn-border);
 }
 
+.kk-fill-height {
+    height: inherit;
+}
+
 /* CONTENT STYLE */
 
 /* content */
@@ -167,11 +171,15 @@ h2.kk-result > span#result-type {
     background-color: var(--kk-dark-bg-color);
 }
 
-/* TODO: This is temporary, remove */
 .chart {
-    background-color: #FF0000;
-    width: 100%;
-    min-height: 240px;
+    background-color: white;
+    max-height: 50vh;
+}
+
+.chart > * {
+    max-height: inherit;
+    width: auto;
+    margin: 0 auto;
 }
 
 a.kk-btn {
@@ -200,6 +208,11 @@ a.kk-btn:active, a.kk-btn:hover {
     position: absolute;
     bottom: calc(var(--kk-footer-height));
     left: inherit;
+    display: none;
+}
+
+.kk-expandable.visible {
+    display: block;
 }
 
 ul.kk-list > li {
