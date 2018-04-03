@@ -162,6 +162,7 @@ body.kk-flex-body {
 /* specific element layout */
 
 .chart {
+    min-height: 55vh;
     background-color: white;
     max-width: 100%;
 }
