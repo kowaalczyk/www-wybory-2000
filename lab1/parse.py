@@ -42,7 +42,7 @@ print('database clean')
 # load swiat
 df = pd.read_excel(swiat_excel, index=[0], )
 try:
-    df.to_sql('swiat', conn, if_exists='fail', index=True, index_label='id')
+    df.to_sql('swiat', conn, if_exists='append', index=True, index_label='id')
 except Exception as e:
     print(e)
     exit(1)
