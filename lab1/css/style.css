@@ -185,6 +185,17 @@ header > h1 {
     color: #000000;
 }
 
+/* more space for content on smaller / mobile devices */
+@media (max-width: 720px) {
+    header > h1 {
+        font-size: 1.25rem;
+    }
+
+    .kk-bar-after::after {
+        margin: var(--kk-small-vertical) auto 0 auto;
+    }
+}
+
 h2.kk-result > span#result-name {
     font-size: 3.75rem;
     text-align: left;
