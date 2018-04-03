@@ -8,10 +8,8 @@ import pandas as pd
 
 db_file = 'db/lab1_dev.db'
 swiat_excel = 'raw_data/xls/zagranica.xls'
-obwod_excel_dir = 'raw_data/xls/obwody'
-obwod_index = ['Kod_gminy', 'Nr_obw']
-gmina_excel_dir = 'raw_data/xls/gminy'
-
+main_excel_dir = 'raw_data/xls/obwody'
+main_index = ['Kod_gminy', 'Nr_obw']
 
 
 # SCRIPT
@@ -43,35 +41,22 @@ except Error as e:
 print('database clean')
 
 print('loading data...')
-# load obwod
-print('obwod...')
-dir = os.fsencode(obwod_excel_dir)
+# load main part of data
+print('loading obwod, gmina, okreg, wojewodztwo, kraj from:')
+dir = os.fsencode(main_excel_dir)
 for file in os.listdir(dir):
     filename = os.fsdecode(file)
     if filename.startswith('obw'):
         print(filename)
-        df = pd.read_excel("{}/{}".format(obwod_excel_dir, filename))
+        # load and rename columns
+        df = pd.read_excel("{}/{}".format(main_excel_dir, filename))
         df.rename(columns=lambda x: re.sub("\s+", "_", x), inplace=True)
-        df.rename(columns=lambda x: re.sub("[|.|, ]", "", x), inplace=True)
-        df.set_index(obwod_index, inplace=True)
-        try:
-            df.to_sql('obwod', conn, if_exists='append', index=True)
-        except Exception as e:
-            print(e)
-            exit(1)
-
-# TODO: load gmina, okreg, wojewodztwo, kraj
-# load gmina
-print('gmina...')
-dir = os.fsencode(gmina_excel_dir)
-for file in os.listdir(dir):
-    filename = os.fsdecode(file)
-    if filename.startswith('gm-'):
-        print(filename)
-        df = pd.read_excel("{}/{}".format(obwod_excel_dir, filename))
-        df.rename(columns=lambda x: re.sub("\s+", "_", x), inplace=True)
-        df.rename(columns=lambda x: re.sub("[|.|, ]", "", x), inplace=True)
-        df.set_index(obwod_index, inplace=True)
+        df.rename(columns=lambda x: re.sub("[|.|,]+", "", x), inplace=True)
+        # change types, add missing necessary columns and index
+        df['Kod_gminy'] = df['Kod_gminy'].astype(str)
+        df['Kod_wojewodztwa'] = df['Kod_gminy'].astype(str).str[:2]
+        df.set_index(main_index, inplace=True)
+        # insert to db
         try:
             df.to_sql('obwod', conn, if_exists='append', index=True)
         except Exception as e:
@@ -88,7 +73,7 @@ except Exception as e:
     print(e)
     exit(1)
 
-# TODO: load ogolne
+# TODO: kody wojewodztw
 
 # clean up and exit
 print('all data saved to database')
