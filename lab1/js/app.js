@@ -121,55 +121,6 @@ const exampleApiResponse = {
     }
 };
 
-const menuListPrefix = [
-    {
-        position: 0,
-        text: 'Wyniki zbiorcze',
-        link: '/'
-    },
-    {
-        position: 1,
-        text: 'Wyniki krajowe',
-        link: '/polska/'
-    },
-    {
-        position: 2,
-        text: 'Wyniki zagraniczne',
-        link: '/zagraniczne/'
-    }
-];
-
-const menuListSuffix = [
-    {
-        position: 99,
-        text: 'O aplikacji',
-        link: '/info/'
-    }
-];
-
-const createMenuLinks = apiResponse => {
-    let ans = [];
-    menuLinksPrefix.forEach(i => ans.push(i));
-
-    if(apiResponse.scope.href) {
-        ans.push({
-            position: ans.size(),
-            text: apiResponse.scope.type,
-            link: apiResponse.scope.href
-        });
-    }
-    if(apiResponse.subScope.href) {
-        ans.push({
-            position: ans.size(),
-            text: apiResponse.subScope.type,
-            link: apiResponse.subScope.href
-        });
-    }
-
-    menuLinksSuffix.forEach(i => ans.push(i));
-    return ans;
-};
-
 Chart.defaults.global.defaultFontSize = 12;
 Chart.defaults.global.defaultFontColor = '#202020';
 Chart.defaults.global.defaultFontFamily = "'Roboto Mono', monospace";
@@ -244,7 +195,8 @@ let app = new Vue({
             menu: false,
             filter: false,
             search: false
-        }
+        },
+        menuListItems: []
     },
     methods: {
         closeExpandables() {
@@ -261,9 +213,6 @@ let app = new Vue({
                 this.closeExpandables();
             }
             this.expandables[expandableName] = !prevState;
-
-            // TODO: Remove
-            console.log(createMenuLinks(exampleApiResponse));
         },
         setScoresType(event, type) {
             console.log('setting data as visible: ', type);
@@ -286,6 +235,27 @@ let app = new Vue({
                 default:
                     break;
             }
+        }, createMenuList(apiResponse) {
+            let ans = [];
+
+            if(apiResponse.scope.href) {
+                ans.push({
+                    position: ans.length,
+                    text: apiResponse.scope.type,
+                    link: apiResponse.scope.href
+                });
+            }
+            if(apiResponse.subScope.href) {
+                ans.push({
+                    position: ans.length,
+                    text: apiResponse.subScope.type,
+                    link: apiResponse.subScope.href
+                });
+            }
+            return ans;
         }
+    },
+    mounted() {
+        this.menuListItems = this.createMenuList(exampleApiResponse)
     }
 });

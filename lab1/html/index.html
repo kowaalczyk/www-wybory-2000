@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>[DEV] Wybory prezydenta RP 2000</title>
+    <title>[DEV] Wybory Prezydenta RP 2000</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="height=device-height, initial-scale=1.0">
@@ -25,7 +25,7 @@
             <!-- PAGE TITLE -->
             <header class="kk-block-vmargin">
                 <h1 class="kk-bar-after">
-                    Wybory prezydenta RP 2000
+                    Wybory Prezydenta RP 2000
                 </h1>
             </header>
             <section class="kk-block-vmargin">
@@ -107,9 +107,9 @@
                                 Wyniki zagraniczne
                             </a>
                         </li>
-                        <li>
-                            <a class="kk-btn kk-list-btn" href="#!">
-                                Województwa
+                        <li v-for="item in menuListItems" :key="item.position">
+                            <a class="kk-btn kk-list-btn" v-bind:href="item.link">
+                                Wybierz: {{ item.text }}
                             </a>
                         </li>
                         <li>
