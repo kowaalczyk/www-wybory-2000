@@ -129,7 +129,7 @@ Chart.defaults.global.defaultFontFamily = "'Roboto Mono', monospace";
 Vue.component('main-chart', {
     extends: VueChartJs.Bar,
     mixins: [VueChartJs.mixins.reactiveProp],
-    props: ['chartData', 'options'],
+    props: ['options'],
     mounted() {
         this.renderChart(this.chartData, this.options);
     }
@@ -219,12 +219,15 @@ let app = new Vue({
 
             // change datasets for chart
             event.preventDefault();
-            let currentData = this.currentVisibleData.chart.data;
-            currentData.datasets = this.currentApiResponse.data[type];
-            this.currentVisibleData.chart.data = currentData;
+            // let currentData = this.currentVisibleData.chart.data;
+            // currentData.datasets = this.currentApiResponse.data[type];
+            // this.currentVisibleData.chart.data = currentData;
+            let data = this.currentVisibleData.chart.data;
+            data.datasets = this.currentApiResponse.data[type];
+            Vue.set(this.currentVisibleData.chart, 'data', data);
             // TODO: Force re-render, currently need to click chart
 
-            // additional tweaks
+            // additional tweaks TODO
             switch (type) {
                 case 'normal':
                     break;
