@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>[Demo] Testing styles</title>
+    <title>[DEV] Wybory prezydenta RP 2000</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="height=device-height, initial-scale=1.0">
@@ -33,27 +33,36 @@
                 <!-- CONTENT TITLE -->
                 <h2 class="kk-block-tmargin kk-result">
                 <span id="result-name">
-                    {{ scope.name }}
+                    {{ currentVisibleData.scope.name }}
                 </span>
                     <br>
                     <span id="result-type">
-                    {{ scope.type }}, {{ scope.location }}
+                    {{ currentVisibleData.scope.type }}, {{ currentVisibleData.scope.location }}
                 </span>
                 </h2>
 
                 <!-- CONTENT (GRAPH AND SWITCHES) -->
-                <main-chart v-bind:chart-data="chartData"
-                            v-bind:options="chartOptions"
+                <main-chart v-bind:chart-data="currentVisibleData.chart.data"
+                            v-bind:options="currentVisibleData.chart.options"
                             class="kk-block-tmargin chart">
                 </main-chart>
                 <div class="kk-block-tmargin kk-horizontal kk-btns-separated">
-                    <a class="kk-btn" id="score-percent" href="#!">
+                    <a class="kk-btn"
+                       id="score-percent"
+                       href="#!"
+                       @click="setScoresType($event, 'percent')">
                         Wyniki procentowe
                     </a>
-                    <a class="kk-btn" id="score-count" href="#!">
+                    <a class="kk-btn"
+                       id="score-count"
+                       href="#!"
+                       @click="setScoresType($event, 'normal')">
                         Liczba głosów
                     </a>
-                    <a class="kk-btn" id="score-filter" href="#!">
+                    <a class="kk-btn"
+                       id="score-filter"
+                       href="#!"
+                       @click="setScoresType($event, 'filterable')">
                         Filtruj wyniki
                     </a>
                 </div>
