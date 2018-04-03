@@ -62,6 +62,9 @@ const scoresPercent = [
     0.129544418190109
 ];
 
+Chart.defaults.global.defaultFontColor = '#202020';
+Chart.defaults.global.defaultFontFamily = "'Roboto Mono', monospace";
+
 // chart component
 Vue.component('main-chart', {
     extends: VueChartJs.Bar,
@@ -89,9 +92,16 @@ let app = new Vue({
                 backgroundColor: calculateBackgroundColor(colors[0]),
                 borderColor: calculateBorderColor(colors[0]),
                 borderWidth: 1
+            }, {
+                label: 'Liczba głosów 2',
+                data: scores,
+                backgroundColor: calculateBackgroundColor(colors[1]),
+                borderColor: calculateBorderColor(colors[1]),
+                borderWidth: 1
             }]
         },
         chartOptions: {
+            animation: false,
             responsive: true,
             maintainAspectRatio: false,
             legend: {
@@ -105,13 +115,24 @@ let app = new Vue({
                         autoSkip: false,
                         maxRotation: 90,
                         minRotation: 90,
-                    }
+                    },
+                    stacked: true
                 }],
                 yAxes: [{
                     ticks: {
+                        display: false,
                         beginAtZero: true
-                    }
+                    },
+                    stacked: true
                 }]
+            },
+            layout: {
+                padding: {
+                    left: 12,
+                    right: 12,
+                    top: 12,
+                    bottom: 12
+                }
             }
         },
         expandables: {
@@ -124,7 +145,6 @@ let app = new Vue({
         closeExpandables() {
             this.expandables = {
                 menu: false,
-                filter: false,
                 search: false
             }
         },
@@ -132,6 +152,7 @@ let app = new Vue({
             event.preventDefault();
             const prevState = this.expandables[expandableName];
             if(!prevState) {
+                // make sure everything is closed before opening expandable
                 this.closeExpandables();
             }
             this.expandables[expandableName] = !prevState;

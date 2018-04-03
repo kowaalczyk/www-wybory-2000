@@ -125,6 +125,19 @@ body.kk-flex-body {
     justify-content: center;
 }
 
+/* make horizontal separated buttons vertical on smaller devices */
+@media (max-width: 720px) {
+    .kk-horizontal.kk-btns-separated {
+        flex-direction: column;
+    }
+
+    .kk-horizontal.kk-btns-separated > a.kk-btn {
+        margin: 0.5vmin;
+        flex-grow: 1;
+        flex-basis: 0;
+    }
+}
+
 .kk-btns-separated > a.kk-btn {
     margin: 0 0.5vw;
     flex-grow: 1;
@@ -144,6 +157,19 @@ body.kk-flex-body {
 
 .kk-fill-height {
     height: inherit;
+}
+
+/* specific element layout */
+
+.chart {
+    background-color: white;
+    max-height: 50vmax; /* TODO: this is eyeballed, think of better layout */
+}
+
+.chart > * {
+    max-height: inherit;
+    width: auto;
+    margin: 0 auto;
 }
 
 /* CONTENT STYLE */
@@ -169,17 +195,6 @@ h2.kk-result > span#result-type {
     line-height: 1.2;
     color: #F4F4F4;
     background-color: var(--kk-dark-bg-color);
-}
-
-.chart {
-    background-color: white;
-    max-height: 50vh;
-}
-
-.chart > * {
-    max-height: inherit;
-    width: auto;
-    margin: 0 auto;
 }
 
 a.kk-btn {

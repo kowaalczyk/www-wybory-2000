@@ -16,7 +16,7 @@
 
     <!--Roboto Mono Google Font, weights: 400, 700-->
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700" rel="stylesheet">
-    <!--TODO: Load fonts locally, bundle css js and images-->
+    <!--TODO: Load fonts locally, bundle css js + compress images-->
 </head>
 <body class="kk-flex-body">
     <div id="vue-app">
@@ -60,6 +60,9 @@
                     <a class="kk-btn" id="score-count" href="#!">
                         Liczba głosów
                     </a>
+                    <a class="kk-btn" id="score-filter" href="#!">
+                        Filtruj wyniki
+                    </a>
                 </div>
             </section>
         </div>
@@ -69,12 +72,6 @@
                 <!-- MENU BUTTONS -->
 
                 <div class="kk-horizontal kk-btns-tight kk-fill-height">
-                    <a href="#!"
-                       class="kk-btn kk-btn-tall"
-                       id="filter-btn"
-                       @click="toggleExpandable($event, 'filter')">
-                        Filtruj wyniki
-                    </a>
                     <a href="#!"
                        class="kk-btn kk-btn-tall"
                        id="search-btn"
@@ -118,18 +115,6 @@
                         <li>
                             <a class="kk-btn kk-list-btn" href="#!">
                                 O aplikacji
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="filter-content"
-                     class="kk-container kk-expandable"
-                     v-bind:class="{visible: expandables.filter}">
-                    <ul class="kk-list">
-                        <li>
-                            <a class="kk-btn kk-list-btn" href="#!">
-                                This is not implemented yet :c
-                                <!-- TODO: Implement search -->
                             </a>
                         </li>
                     </ul>
