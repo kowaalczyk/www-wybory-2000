@@ -138,6 +138,10 @@ body.kk-flex-body {
     }
 }
 
+.kk-fill-height {
+    height: inherit;
+}
+
 .kk-btns-separated > a.kk-btn {
     margin: 0 0.5vw;
     flex-grow: 1;
@@ -155,20 +159,16 @@ body.kk-flex-body {
     border-right: var(--kk-btn-border);
 }
 
-.kk-fill-height {
-    height: inherit;
-}
-
 /* specific element layout */
 
 .chart {
     background-color: white;
-    max-height: 50vmax; /* TODO: this is eyeballed, think of better layout */
+    max-width: 100%;
 }
 
 .chart > * {
-    max-height: inherit;
     width: auto;
+    max-width: inherit;
     margin: 0 auto;
 }
 
@@ -199,7 +199,6 @@ h2.kk-result > span#result-type {
 
 a.kk-btn {
     display: block;
-    min-height: var(--kk-big-vertical);
     padding: 0.5vmin;
     text-align: center;
     text-decoration: none;

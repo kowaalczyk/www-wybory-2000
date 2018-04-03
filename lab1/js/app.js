@@ -1,8 +1,8 @@
-// chart utils
+// chart utils  TODO: color generation
 const calculateBackgroundColor = rgb => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.2)`;
 const calculateBorderColor = rgb => `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`;
 
-const labels = [
+const candidateNameLabels = [
     'Dariusz Maciej GRABOWSKI',
     'Piotr IKONOWICZ',
     'Jarosław KALINOWSKI',
@@ -32,7 +32,7 @@ const colors = [
     [255, 159, 64]
 ];
 
-const scores = [
+const exampleDatasetsNormal = [
     860,
     411,
     2086,
@@ -47,7 +47,7 @@ const scores = [
     250
 ];
 
-const scoresPercent = [
+const exampleDatasetsPercent = [
     0.445632798573975,
     0.212971023504539,
     1.08091862537827,
@@ -62,6 +62,11 @@ const scoresPercent = [
     0.129544418190109
 ];
 
+const exampleDatasetsFilterable = [
+
+];
+
+Chart.defaults.global.defaultFontSize = 12;
 Chart.defaults.global.defaultFontColor = '#202020';
 Chart.defaults.global.defaultFontFamily = "'Roboto Mono', monospace";
 
@@ -85,16 +90,16 @@ let app = new Vue({
             location: 'powiat Kraków, woj. Małopolskie'
         },
         chartData: {
-            labels,
+            labels: candidateNameLabels,
             datasets: [{
                 label: 'Liczba głosów',
-                data: scores,
+                data: exampleDatasetsNormal,
                 backgroundColor: calculateBackgroundColor(colors[0]),
                 borderColor: calculateBorderColor(colors[0]),
                 borderWidth: 1
             }, {
                 label: 'Liczba głosów 2',
-                data: scores,
+                data: exampleDatasetsNormal,
                 backgroundColor: calculateBackgroundColor(colors[1]),
                 borderColor: calculateBorderColor(colors[1]),
                 borderWidth: 1
@@ -133,6 +138,13 @@ let app = new Vue({
                     top: 12,
                     bottom: 12
                 }
+            },
+            title: {
+                display: true,
+                position: 'bottom',
+                fontFamily: Chart.defaults.global.defaultFontFamily,
+                fontStyle: 'normal',
+                text: 'Kliknij na legendzie aby filtrować wyniki'
             }
         },
         expandables: {
@@ -157,5 +169,14 @@ let app = new Vue({
             }
             this.expandables[expandableName] = !prevState;
         },
+        setScorePct() {
+            // TODO
+        },
+        setScoreCount() {
+            // TODO
+        },
+        setScoreFilterable() {
+            // TODO
+        }
     }
 });
