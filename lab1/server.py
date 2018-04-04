@@ -1,11 +1,24 @@
 import sqlite3
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from flask_restful import Resource, Api
-from json import dumps
 
 
 # config
 db_file = 'db/lab1_dev.db'
+candidate_name_labels = [
+    'Dariusz_Maciej_GRABOWSKI',
+    'Piotr_IKONOWICZ',
+    'Jarosław_KALINOWSKI',
+    'Janusz_KORWIN-MIKKE',
+    'Marian_KRZAKLEWSKI',
+    'Aleksander_KWAŚNIEWSKI',
+    'Andrzej_LEPPER',
+    'Jan_ŁOPUSZAŃSKI',
+    'Andrzej_Marian_OLECHOWSKI',
+    'Bogdan_PAWŁOWSKI',
+    'Lech_WAŁĘSA',
+    'Tadeusz_Adam_WILECKI'
+]
 
 # setup
 app = Flask(__name__)
@@ -25,8 +38,14 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+def sum_query_string(with_total=False):
+    arr = ["sum(\"{}\")".format(x) for x in candidate_name_labels]
+    if(with_total):
+        arr.append('sum(Głosy_ważne)')
+    return ', '.join(arr)
 
-# resources
+
+# resources TODO: add error handling everywhere !!!
 
 class ListaWojewodztw(Resource):
     def get(self):
@@ -40,8 +59,8 @@ class ListaOkregow(Resource):
         cur = get_cursor()
         cur.execute('select distinct Nr_okr from kraj order by Nr_okr asc')
         rows = cur.fetchall()
-        list = ["Okręg numer {}".format(d['Nr_okr']) for d in rows]
-        return jsonify(list)
+        ret = ["Okręg numer {}".format(d['Nr_okr']) for d in rows]
+        return jsonify(ret)
 
 class ListaGmin(Resource):
     def get(self):
@@ -53,12 +72,56 @@ class ListaGmin(Resource):
 # class Ogolne(Resource):
 #     # TODO
 #
+
 # class Swiat(Resource):
 #     # TODO
 #
-# class Kraj(Resource):
-#     # TODO
-#
+class Kraj(Resource):
+    def get(self):
+        cur = get_cursor()
+        # main query
+        query = "select {} from kraj".format(sum_query_string(with_total=True))
+        cur.execute(query)
+        rows = cur.fetchall()
+
+        # last item in rows is a sum of all
+        normal_data = list(rows[0].values())[:-1]
+        sum_votes = list(rows[0].values())[-1]
+        percent_data = [float("{0:2.2f}".format(100*x/sum_votes)) for x in normal_data]
+
+        # sub-category query
+        query = "select min(wojewodztwa.nazwa), {} from kraj left join wojewodztwa " \
+                "on kraj.Kod_wojewodztwa = wojewodztwa.Kod_wojewodztwa " \
+                "group by wojewodztwa.Kod_wojewodztwa " \
+                "order by wojewodztwa.Kod_wojewodztwa asc".format(sum_query_string())
+        cur.execute(query)
+        rows = cur.fetchall()
+        filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+
+        ret = {
+            'scope': {
+                'name': 'Polska',
+                'type': 'Wyniki krajowe (nie obejmują głosów oddawanych poza granicami Polski)',
+                'location': '',
+                'href': False
+            },
+            'subScope': {
+                'href': False
+            },
+            'data': {
+                'normal': [{
+                    'label': 'Suma głosów',
+                    'data': normal_data
+                }],
+                'percent': [{
+                    'label': 'Procent głosów',
+                    'data': percent_data
+                }],
+                'filterable': filterable_data,
+            }
+        }
+        return jsonify(ret)
+
 # class Wojewodtwo(Resource):
 #     # TODO
 
@@ -76,7 +139,7 @@ class Okreg(Resource):
 
 # api.add_resource(Ogolne, '/')
 # api.add_resource(Swiat, '/swiat')
-# api.add_resource(Kraj, '/kraj')
+api.add_resource(Kraj, '/kraj')
 # api.add_resource(Wojewodztwo, '/wojewodztwo/<int:id>')
 api.add_resource(Okreg, '/okreg/<int:id>')
 # api.add_resource(Gmina, '/gmina/<int:id>')
