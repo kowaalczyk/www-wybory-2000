@@ -1,3 +1,5 @@
+# TODO: add error handling everywhere !!!
+
 import sqlite3
 from flask import Flask, jsonify
 from flask_restful import Resource, Api
@@ -46,8 +48,33 @@ def sum_query_string(with_total=False):
         arr.append('sum(Głosy_ważne)')
     return ', '.join(arr)
 
+def get_standard_results(query):
+    # main query
+    cur = get_cursor()
+    cur.execute(query)
+    rows = cur.fetchall()
 
-# resources TODO: add error handling everywhere !!!
+    # percent calculation - last item in rows must be a sum of all other
+    normal_data = list(rows[0].values())[:-1]
+    sum_votes = list(rows[0].values())[-1]
+    percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
+    return (normal_data, percent_data)
+
+def get_filterable_results(query):
+    cur = get_cursor()
+    cur.execute(query)
+    rows = cur.fetchall()
+    return [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+
+def get_location_rows(key, val):
+    cur = get_cursor()
+    query = "select Nazwa, kraj.Nr_okr, Gmina from kraj left join wojewodztwa " \
+            "on kraj.Kod_wojewodztwa = wojewodztwa.Kod_wojewodztwa " \
+            "where kraj.\"{}\"=\"{}\" limit 1".format(key, val)
+    cur.execute(query)
+    return cur.fetchall()
+
+# resources
 
 class ListaWojewodztw(Resource):
     def get(self):
@@ -83,26 +110,14 @@ class ListaGmin(Resource):
 #
 class Kraj(Resource):
     def get(self):
-        cur = get_cursor()
-
-        # main query
         query = "select {} from kraj".format(sum_query_string(with_total=True))
-        cur.execute(query)
-        rows = cur.fetchall()
+        normal_data, percent_data = get_standard_results(query)
 
-        # last item in rows is a sum of all
-        normal_data = list(rows[0].values())[:-1]
-        sum_votes = list(rows[0].values())[-1]
-        percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
-
-        # sub-category query
         query = "select min(wojewodztwa.nazwa), {} from kraj left join wojewodztwa " \
                 "on kraj.Kod_wojewodztwa = wojewodztwa.Kod_wojewodztwa " \
                 "group by wojewodztwa.Kod_wojewodztwa " \
                 "order by wojewodztwa.Kod_wojewodztwa asc".format(sum_query_string())
-        cur.execute(query)
-        rows = cur.fetchall()
-        filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+        filterable_data = get_filterable_results(query)
 
         ret = {
             'scope': {
@@ -132,32 +147,16 @@ class Kraj(Resource):
 
 class Wojewodztwo(Resource):
     def get(self, id):
-        cur = get_cursor()
-
-        # main query
         query = "select {} from kraj where Kod_wojewodztwa=\"{}\"".format(sum_query_string(with_total=True), id)
-        cur.execute(query)
-        rows = cur.fetchall()
+        normal_data, percent_data = get_standard_results(query)
 
-        # last item in rows is a sum of all
-        normal_data = list(rows[0].values())[:-1]
-        sum_votes = list(rows[0].values())[-1]
-        percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
-
-        # sub-category query
         query = "select min(\"Nr_okr\"), {} from kraj " \
                 "where Kod_wojewodztwa=\"{}\" " \
                 "group by \"Nr_okr\" " \
                 "order by \"Nr_okr\" asc".format(sum_query_string(), id)
-        cur.execute(query)
-        rows = cur.fetchall()
-        filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+        filterable_data = get_filterable_results(query)
 
-        # name query TODO: This should be possible without it
-        query = "select Nazwa from wojewodztwa where Kod_wojewodztwa=\"{}\"".format(id)
-        cur.execute(query)
-        rows = cur.fetchall()
-        print(query)
+        rows = get_location_rows("Kod_wojewodztwa", id)
         name = rows[0]['Nazwa']
 
         ret = {
@@ -185,36 +184,19 @@ class Wojewodztwo(Resource):
         }
         return jsonify(ret)
 
+
 class Okreg(Resource):
     def get(self, id):
-        cur = get_cursor()
-
-        # main query
         query = "select {} from kraj where \"Nr_okr\"=\"{}\"".format(sum_query_string(with_total=True), id)
-        cur.execute(query)
-        rows = cur.fetchall()
+        normal_data, percent_data = get_standard_results(query)
 
-        # last item in rows is a sum of all
-        normal_data = list(rows[0].values())[:-1]
-        sum_votes = list(rows[0].values())[-1]
-        percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
-
-        # sub-category query
         query = "select min(Gmina), {} from kraj " \
                 "where \"Nr_okr\"=\"{}\" " \
                 "group by Kod_gminy " \
                 "order by Kod_gminy asc".format(sum_query_string(), id)
-        cur.execute(query)
-        rows = cur.fetchall()
-        filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+        filterable_data = get_filterable_results(query)
 
-        # location query TODO: This should be possible without it
-        query = "select Nazwa from kraj left join wojewodztwa " \
-                "on kraj.Kod_wojewodztwa = wojewodztwa.Kod_wojewodztwa " \
-                "where kraj.Nr_okr=\"{}\" limit 1".format(id)
-        cur.execute(query)
-        rows = cur.fetchall()
-        print(query)
+        rows = get_location_rows("Nr_okr", id)
         parent_scope_name = rows[0]['Nazwa']
 
         ret = {
@@ -245,33 +227,15 @@ class Okreg(Resource):
 
 class Gmina(Resource):
     def get(self, id):
-        cur = get_cursor()
-
-        # main query
         query = "select {} from kraj where \"Kod_gminy\"=\"{}\"".format(sum_query_string(with_total=True), id)
-        cur.execute(query)
-        rows = cur.fetchall()
+        normal_data, percent_data = get_standard_results(query)
 
-        # last item in rows is a sum of all
-        normal_data = list(rows[0].values())[:-1]
-        sum_votes = list(rows[0].values())[-1]
-        percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
-
-        # sub-category query
         query = "select min(Nr_obw) as Nr_obw, {} from kraj " \
                 "where \"Kod_gminy\"=\"{}\" " \
                 "order by Nr_obw asc".format(sum_query_string(), id)
-        cur.execute(query)
-        rows = cur.fetchall()
-        filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+        filterable_data = get_filterable_results(query)
 
-        # location query TODO: This should be possible without it
-        query = "select Nazwa, kraj.Nr_okr, Gmina from kraj left join wojewodztwa " \
-                "on kraj.Kod_wojewodztwa = wojewodztwa.Kod_wojewodztwa " \
-                "where kraj.Kod_gminy=\"{}\" limit 1".format(id)
-        cur.execute(query)
-        rows = cur.fetchall()
-        print(query)
+        rows = get_location_rows("Kod_gminy", id)
         parent_scope_name = "{} okręg wyborczy #{}".format(rows[0]['Nazwa'], rows[0]['Nr_okr'])
         current_scope_name = rows[0]['Gmina']
 
