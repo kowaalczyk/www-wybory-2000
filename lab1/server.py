@@ -22,7 +22,7 @@ candidate_name_labels = [
 ]
 
 # setup
-app = Flask(__name__)
+app = Flask(__name__, static_folder='', static_url_path='')
 api = Api(app)
 
 
@@ -348,15 +348,20 @@ class Gmina(Resource):
 # routes
 
 
-api.add_resource(Ogolne, '/')
-api.add_resource(Swiat, '/swiat')
-api.add_resource(Kraj, '/kraj')
-api.add_resource(Wojewodztwo, '/wojewodztwo/<id>')
-api.add_resource(Okreg, '/okreg/<id>')
-api.add_resource(Gmina, '/gmina/<id>')
-api.add_resource(ListaWojewodztw, '/listy/wojewodztwa')
-api.add_resource(ListaOkregow, '/listy/okregi')
-api.add_resource(ListaGmin, '/listy/gminy')
+api.add_resource(Ogolne, '/api/')
+api.add_resource(Swiat, '/api/swiat')
+api.add_resource(Kraj, '/api/kraj')
+api.add_resource(Wojewodztwo, '/api/wojewodztwo/<id>')
+api.add_resource(Okreg, '/api/okreg/<id>')
+api.add_resource(Gmina, '/api/gmina/<id>')
+api.add_resource(ListaWojewodztw, '/api/listy/wojewodztwa')
+api.add_resource(ListaOkregow, '/api/listy/okregi')
+api.add_resource(ListaGmin, '/api/listy/gminy')
+
+@app.route('/')
+def root():
+    print('sending index')
+    return app.send_static_file('html/index.html')
 
 # server
 app.run(port=2137)
