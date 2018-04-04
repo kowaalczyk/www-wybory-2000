@@ -86,7 +86,7 @@ for file in os.listdir(dir):
     if filename.startswith('obw'):
         print(filename)
         # load and rename columns
-        df = pd.read_excel("{}/{}".format(main_excel_dir, filename))
+        df = pd.read_excel("{}/{}".format(main_excel_dir, filename), dtype=str)
         df.rename(columns=lambda x: re.sub("\s+", "_", x), inplace=True)
         df.rename(columns=lambda x: re.sub("[|.|,]+", "", x), inplace=True)
         # change types, add missing necessary columns and index
@@ -102,7 +102,7 @@ for file in os.listdir(dir):
 
 # load swiat
 print('swiat...')
-df = pd.read_excel(swiat_excel)
+df = pd.read_excel(swiat_excel, dtype=str)
 df.rename(columns=lambda x: re.sub("[\s|.|,]+", "_", x))
 try:
     df.to_sql(swiat_table_name, conn, if_exists='fail', index=True, index_label='id')
