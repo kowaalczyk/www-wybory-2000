@@ -243,8 +243,62 @@ class Okreg(Resource):
         return jsonify(ret)
 
 
-# class Gmina(Resource):
-#     # TODO
+class Gmina(Resource):
+    def get(self, id):
+        cur = get_cursor()
+
+        # main query
+        query = "select {} from kraj where \"Kod_gminy\"=\"{}\"".format(sum_query_string(with_total=True), id)
+        cur.execute(query)
+        rows = cur.fetchall()
+
+        # last item in rows is a sum of all
+        normal_data = list(rows[0].values())[:-1]
+        sum_votes = list(rows[0].values())[-1]
+        percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
+
+        # sub-category query
+        query = "select min(Nr_obw) as Nr_obw, {} from kraj " \
+                "where \"Kod_gminy\"=\"{}\" " \
+                "order by Nr_obw asc".format(sum_query_string(), id)
+        cur.execute(query)
+        rows = cur.fetchall()
+        filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+
+        # location query TODO: This should be possible without it
+        query = "select Nazwa, kraj.Nr_okr, Gmina from kraj left join wojewodztwa " \
+                "on kraj.Kod_wojewodztwa = wojewodztwa.Kod_wojewodztwa " \
+                "where kraj.Kod_gminy=\"{}\" limit 1".format(id)
+        cur.execute(query)
+        rows = cur.fetchall()
+        print(query)
+        parent_scope_name = "{} okręg wyborczy #{}".format(rows[0]['Nazwa'], rows[0]['Nr_okr'])
+        current_scope_name = rows[0]['Gmina']
+
+        ret = {
+            'scope': {
+                'name': current_scope_name,
+                'type': 'gmina',
+                'location': parent_scope_name,
+                'href': '/listy/gminy'
+            },
+            'subScope': {
+                'type': 'obwod',
+                'href': False
+            },
+            'data': {
+                'normal': [{
+                    'label': 'Suma głosów',
+                    'data': normal_data
+                }],
+                'percent': [{
+                    'label': 'Procent głosów',
+                    'data': percent_data
+                }],
+                'filterable': filterable_data,
+            }
+        }
+        return jsonify(ret)
 
 
 # routes
@@ -254,7 +308,7 @@ class Okreg(Resource):
 api.add_resource(Kraj, '/kraj')
 api.add_resource(Wojewodztwo, '/wojewodztwo/<id>')
 api.add_resource(Okreg, '/okreg/<id>')
-# api.add_resource(Gmina, '/gmina/<id>')
+api.add_resource(Gmina, '/gmina/<id>')
 api.add_resource(ListaWojewodztw, '/listy/wojewodztwa')
 api.add_resource(ListaOkregow, '/listy/okregi')
 api.add_resource(ListaGmin, '/listy/gminy')
