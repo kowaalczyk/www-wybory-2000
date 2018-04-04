@@ -14,6 +14,11 @@ api = Api(app)
 
 #helpers
 
+def get_cursor():
+    conn = sqlite3.connect(db_file)
+    conn.row_factory = dict_factory
+    return conn.cursor()
+
 def dict_factory(cursor, row):
     d = {}
     for idx, col in enumerate(cursor.description):
@@ -25,15 +30,26 @@ def dict_factory(cursor, row):
 
 class ListaWojewodztw(Resource):
     def get(self):
-        conn = sqlite3.connect(db_file)
-        conn.row_factory = dict_factory
-        cur = conn.cursor()
-        cur.execute('select * from wojewodztwa')
+        cur = get_cursor()
+        cur.execute('select * from wojewodztwa order by Kod_wojewodztwa asc')
         rows = cur.fetchall()
-        for row in rows:
-            print(row)
         return jsonify(rows)
-#
+
+class ListaOkregow(Resource):
+    def get(self):
+        cur = get_cursor()
+        cur.execute('select distinct Nr_okr from kraj order by Nr_okr asc')
+        rows = cur.fetchall()
+        list = ["Okręg numer {}".format(d['Nr_okr']) for d in rows]
+        return jsonify(list)
+
+class ListaGmin(Resource):
+    def get(self):
+        cur = get_cursor()
+        cur.execute('select distinct Kod_gminy, gmina from kraj order by Kod_gminy asc')
+        rows = cur.fetchall()
+        return jsonify(rows)
+
 # class Ogolne(Resource):
 #     # TODO
 #
@@ -65,6 +81,8 @@ class Okreg(Resource):
 api.add_resource(Okreg, '/okreg/<int:id>')
 # api.add_resource(Gmina, '/gmina/<int:id>')
 api.add_resource(ListaWojewodztw, '/listy/wojewodztwa')
+api.add_resource(ListaOkregow, '/listy/okregi')
+api.add_resource(ListaGmin, '/listy/gminy')
 
 
 #server
