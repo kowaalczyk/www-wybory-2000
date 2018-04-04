@@ -1,4 +1,8 @@
-# TODO: add error handling everywhere !!!
+# TODO: 1. complete missing routes
+# TODO: 2. add color generation in back-end
+# TODO: 3. use vue-router and async requests to update data
+# TODO: 4. fix bug during chart update
+# TODO: 5. add error handling everywhere !!!
 
 import sqlite3
 from flask import Flask, jsonify
@@ -29,6 +33,7 @@ api = Api(app)
 
 # helpers
 
+
 def get_cursor():
     conn = sqlite3.connect(db_file)
     conn.row_factory = dict_factory
@@ -48,6 +53,7 @@ def sum_query_string(with_total=False):
         arr.append('sum(Głosy_ważne)')
     return ', '.join(arr)
 
+
 def get_standard_results(query):
     # main query
     cur = get_cursor()
@@ -60,11 +66,13 @@ def get_standard_results(query):
     percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
     return (normal_data, percent_data)
 
+
 def get_filterable_results(query):
     cur = get_cursor()
     cur.execute(query)
     rows = cur.fetchall()
     return [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+
 
 def get_location_rows(key, val):
     cur = get_cursor()
@@ -74,7 +82,9 @@ def get_location_rows(key, val):
     cur.execute(query)
     return cur.fetchall()
 
+
 # resources
+
 
 class ListaWojewodztw(Resource):
     def get(self):
@@ -267,6 +277,7 @@ class Gmina(Resource):
 
 # routes
 
+
 # api.add_resource(Ogolne, '/')
 # api.add_resource(Swiat, '/swiat')
 api.add_resource(Kraj, '/kraj')
@@ -277,6 +288,6 @@ api.add_resource(ListaWojewodztw, '/listy/wojewodztwa')
 api.add_resource(ListaOkregow, '/listy/okregi')
 api.add_resource(ListaGmin, '/listy/gminy')
 
-# server
 
+# server
 app.run(port=2137)
