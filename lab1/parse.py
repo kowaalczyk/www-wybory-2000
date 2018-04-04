@@ -104,7 +104,8 @@ for file in os.listdir(dir):
 # load swiat
 print('swiat...')
 df = pd.read_excel(swiat_excel, dtype=str)
-df.rename(columns=lambda x: re.sub("[\s|.|,]+", "_", x))
+df.rename(columns=lambda x: re.sub("\s+", "_", x), inplace=True)
+df.rename(columns=lambda x: re.sub("[|.|,]+", "", x), inplace=True)
 try:
     df.to_sql(swiat_table_name, conn, if_exists='fail', index=True, index_label='id')
 except Exception as e:
