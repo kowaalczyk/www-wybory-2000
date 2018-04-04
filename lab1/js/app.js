@@ -41,7 +41,6 @@ const exampleApiResponse = {
     },
     subScope: {
         type: 'obwód',
-        location: 'gmina Kraków, woj. Małopolskie',
         href: false
     },
     data: {

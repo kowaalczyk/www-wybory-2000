@@ -2,9 +2,10 @@ import os
 import re
 import sqlite3
 from sqlite3 import Error
+import pandas as pd
+
 
 # PARAMS
-import pandas as pd
 
 db_file = 'db/lab1_dev.db'
 swiat_excel = 'raw_data/xls/zagranica.xls'
