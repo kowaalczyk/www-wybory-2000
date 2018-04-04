@@ -145,10 +145,10 @@ class Wojewodztwo(Resource):
         percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
 
         # sub-category query
-        query = "select min(Gmina), {} from kraj " \
+        query = "select min(\"Nr_okr\"), {} from kraj " \
                 "where Kod_wojewodztwa=\"{}\" " \
-                "group by Kod_gminy " \
-                "order by Kod_gminy asc".format(sum_query_string(), id)
+                "group by \"Nr_okr\" " \
+                "order by \"Nr_okr\" asc".format(sum_query_string(), id)
         cur.execute(query)
         rows = cur.fetchall()
         filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
@@ -187,9 +187,60 @@ class Wojewodztwo(Resource):
 
 class Okreg(Resource):
     def get(self, id):
-        print("Got okreg request with id={}".format(id))
-        return jsonify({"id": id})
-    # TODO: This is just a test, remove
+        cur = get_cursor()
+
+        # main query
+        query = "select {} from kraj where \"Nr_okr\"=\"{}\"".format(sum_query_string(with_total=True), id)
+        cur.execute(query)
+        rows = cur.fetchall()
+
+        # last item in rows is a sum of all
+        normal_data = list(rows[0].values())[:-1]
+        sum_votes = list(rows[0].values())[-1]
+        percent_data = [float("{0:2.2f}".format(100 * x / sum_votes)) for x in normal_data]
+
+        # sub-category query
+        query = "select min(Gmina), {} from kraj " \
+                "where \"Nr_okr\"=\"{}\" " \
+                "group by Kod_gminy " \
+                "order by Kod_gminy asc".format(sum_query_string(), id)
+        cur.execute(query)
+        rows = cur.fetchall()
+        filterable_data = [{'label': list(r.values())[0], 'data': list(r.values())[1:]} for r in rows]
+
+        # location query TODO: This should be possible without it
+        query = "select Nazwa from kraj left join wojewodztwa " \
+                "on kraj.Kod_wojewodztwa = wojewodztwa.Kod_wojewodztwa " \
+                "where kraj.Nr_okr=\"{}\" limit 1".format(id)
+        cur.execute(query)
+        rows = cur.fetchall()
+        print(query)
+        parent_scope_name = rows[0]['Nazwa']
+
+        ret = {
+            'scope': {
+                'name': "Okręg wyborczy #{}".format(id),
+                'type': 'okręg wyborczy',
+                'location': parent_scope_name,
+                'href': '/listy/okregi'
+            },
+            'subScope': {
+                'type': 'gmina',
+                'href': '/listy/gminy'
+            },
+            'data': {
+                'normal': [{
+                    'label': 'Suma głosów',
+                    'data': normal_data
+                }],
+                'percent': [{
+                    'label': 'Procent głosów',
+                    'data': percent_data
+                }],
+                'filterable': filterable_data,
+            }
+        }
+        return jsonify(ret)
 
 
 # class Gmina(Resource):
