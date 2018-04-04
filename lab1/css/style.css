@@ -92,7 +92,7 @@ body.kk-flex-body {
 
 .kk-content {
     padding: var(--kk-big-vertical) 0 calc(var(--kk-big-vertical) + var(--kk-footer-height)) 0;
-    flex-grow: 2;
+    flex-grow: 1;
 }
 
 .kk-footer {
@@ -162,14 +162,14 @@ body.kk-flex-body {
 /* specific element layout */
 
 .chart {
-    min-height: 55vh;
     background-color: white;
     max-width: 100%;
+    min-height: 55vh; /* TODO: this is eyeballed, think of better layout */
 }
 
 .chart > * {
+    min-height: 100%;
     width: auto;
-    max-width: inherit;
     margin: 0 auto;
 }
 
@@ -234,10 +234,13 @@ a.kk-btn:active, a.kk-btn:hover {
     position: absolute;
     bottom: calc(var(--kk-footer-height));
     left: inherit;
+}
+
+.kk-optional {
     display: none;
 }
 
-.kk-expandable.visible {
+.kk-optional.visible {
     display: block;
 }
 

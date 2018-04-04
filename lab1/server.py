@@ -1,5 +1,3 @@
-# TODO: 3. use vue-router and async requests to update data
-# TODO: 4. fix bug during chart update
 # TODO: 5. add error handling everywhere !!!
 import random
 import sqlite3

@@ -19,132 +19,122 @@
     <!--TODO: Load fonts locally, bundle css js + compress images-->
 </head>
 <body class="kk-flex-body">
-    <div id="vue-app">
-        <div class="kk-content kk-container">
+    <div class="kk-content kk-container">
 
-            <!-- PAGE TITLE -->
-            <header class="kk-block-vmargin">
-                <h1 class="kk-bar-after">
-                    Wybory Prezydenta RP 2000
-                </h1>
-            </header>
-            <section class="kk-block-vmargin">
+        <!-- PAGE TITLE -->
+        <header class="kk-block-vmargin">
+            <h1 class="kk-bar-after">
+                Wybory Prezydenta RP 2000
+            </h1>
+        </header>
+        <section class="kk-block-vmargin">
 
-                <!-- CONTENT TITLE -->
-                <h2 class="kk-block-tmargin kk-result">
+            <!-- CONTENT TITLE -->
+            <h2 class="kk-block-tmargin kk-result">
                 <span id="result-name">
-                    {{ currentVisibleData.scope.name }}
+
                 </span>
-                    <br>
-                    <span id="result-type">
-                    {{ currentVisibleData.scope.type }}, {{ currentVisibleData.scope.location }}
+                <br>
+                <span id="result-type">
+
                 </span>
-                </h2>
+            </h2>
 
-                <!-- CONTENT (GRAPH AND SWITCHES) -->
-                <main-chart v-bind:chart-data="currentVisibleData.chart.data"
-                            v-bind:options="currentVisibleData.chart.options"
-                            class="kk-block-tmargin chart">
-                </main-chart>
-                <div class="kk-block-tmargin kk-horizontal kk-btns-separated">
-                    <a class="kk-btn"
-                       id="score-percent"
-                       href="#!"
-                       @click="setScoresType($event, 'percent')">
-                        Wyniki procentowe
-                    </a>
-                    <a class="kk-btn"
-                       id="score-count"
-                       href="#!"
-                       @click="setScoresType($event, 'normal')">
-                        Liczba głosów
-                    </a>
-                    <a class="kk-btn"
-                       id="score-filter"
-                       href="#!"
-                       @click="setScoresType($event, 'filterable')">
-                        Filtruj wyniki
-                    </a>
-                </div>
-            </section>
-        </div>
-        <footer class="kk-footer">
-            <div class="kk-container kk-fill-height">
-
-                <!-- MENU BUTTONS -->
-                <div class="kk-horizontal kk-btns-tight kk-fill-height">
-                    <a href="#!"
-                       class="kk-btn kk-btn-tall"
-                       id="search-btn"
-                       @click="toggleExpandable($event, 'search')">
-                        Wyszukaj
-                    </a>
-                    <a href="#!"
-                       class="kk-btn kk-btn-tall"
-                       id="menu-btn"
-                       @click="toggleExpandable($event, 'menu')">
-                        Menu
-                    </a>
-                </div>
-
-                <!-- MENU EXPANDABLE LISTS -->
-                <div id="menu-content"
-                     class="kk-container kk-expandable"
-                     v-bind:class="{visible: expandables.menu}">
-                    <ul class="kk-list">
-                        <li>
-                            <a class="kk-btn kk-list-btn" href="#!">
-                                Wyniki zbiorcze
-                            </a>
-                        </li>
-                        <li>
-                            <a class="kk-btn kk-list-btn" href="#!">
-                                Wyniki krajowe
-                            </a>
-                        </li>
-                        <li>
-                            <a class="kk-btn kk-list-btn" href="#!">
-                                Wyniki zagraniczne
-                            </a>
-                        </li>
-                        <li v-for="item in menuListItems" :key="item.position">
-                            <a class="kk-btn kk-list-btn" v-bind:href="item.link">
-                                Wybierz: {{ item.text }}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="kk-btn kk-list-btn" href="#!">
-                                O aplikacji
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div id="search-content"
-                     class="kk-container kk-expandable"
-                     v-bind:class="{visible: expandables.search}">
-                    <ul class="kk-list">
-                        <li>
-                            <a class="kk-btn kk-list-btn" href="#!">
-                                This is not implemented yet :c
-                                <!-- TODO: Implement search -->
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            <!-- CONTENT (GRAPH AND SWITCHES) -->
+            <div class="kk-block-tmargin chart">
+                <canvas id="chart"></canvas>
             </div>
-        </footer>
+            <div class="kk-block-tmargin kk-horizontal kk-btns-separated">
+                <a class="kk-btn"
+                   id="score-percent"
+                   href="#!">
+                    Wyniki procentowe
+                </a>
+                <a class="kk-btn"
+                   id="score-count"
+                   href="#!">
+                    Liczba głosów
+                </a>
+                <a class="kk-btn"
+                   id="score-filter"
+                   href="#!">
+                    Filtruj wyniki
+                </a>
+            </div>
+        </section>
     </div>
+    <footer class="kk-footer">
+        <div class="kk-container kk-fill-height">
+
+            <!-- MENU BUTTONS -->
+            <div class="kk-horizontal kk-btns-tight kk-fill-height">
+                <a href="#!"
+                   class="kk-btn kk-btn-tall"
+                   id="search-btn">
+                    Wyszukaj
+                </a>
+                <a href="#!"
+                   class="kk-btn kk-btn-tall"
+                   id="menu-btn">
+                    Menu
+                </a>
+            </div>
+
+            <!-- MENU EXPANDABLE LISTS -->
+            <div id="menu-content"
+                 class="kk-container kk-expandable kk-optional">
+                <ul class="kk-list">
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            Wyniki zbiorcze
+                        </a>
+                    </li>
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            Wyniki krajowe
+                        </a>
+                    </li>
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            Wyniki zagraniczne
+                        </a>
+                    </li>
+                    <li id="kk-optional-1" class="kk-optional">
+                        <a class="kk-btn kk-list-btn">
+
+                        </a>
+                    </li>
+                    <li id="kk-optional-2" class="kk-optional">
+                        <a class="kk-btn kk-list-btn">
+
+                        </a>
+                    </li>
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            O aplikacji
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="search-content"
+                 class="kk-container kk-expandable kk-optional">
+                <ul class="kk-list">
+                    <li>
+                        <a class="kk-btn kk-list-btn" href="#!">
+                            This is not implemented yet :c
+                            <!-- TODO: Implement search -->
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
 
     <!-- SCRIPTS -->
 
-    <!-- Vue.js library, dev version -->
-    <script src="../js/vue.js"></script>
-
-    <!-- Chart.js library and vue wrapper -->
+    <!-- Chart.js library -->
     <!--<script src="../js/Chart.bundle.min.js"></script>-->
     <script src="../js/chart-2.7.1.js"></script>
-    <script src="../js/vue-chartjs.js"></script>
-
 
     <!-- Main application script for the application -->
     <script src="../js/app.js"></script>
