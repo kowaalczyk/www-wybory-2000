@@ -53,6 +53,11 @@ def sum_query_string(with_total=False):
         arr.append('sum(Głosy_ważne)')
     return ', '.join(arr)
 
+def sum_union_query_string(with_total=False):
+    arr = ["sum(\"{}\") as \"{}\"".format(x, x) for x in candidate_name_labels]
+    if (with_total):
+        arr.append('sum(\"Głosy_ważne\") as \"Głosy_ważne\"')
+    return ', '.join(arr)
 
 def get_standard_results(query):
     # main query
@@ -68,6 +73,7 @@ def get_standard_results(query):
 
 
 def get_filterable_results(query):
+    print(query)
     cur = get_cursor()
     cur.execute(query)
     rows = cur.fetchall()
@@ -111,13 +117,74 @@ class ListaGmin(Resource):
         return jsonify(rows)
 
 
-# class Ogolne(Resource):
-#     # TODO
-#
+class Ogolne(Resource):
+    def get(self):
+        query = "select {} from (select {} from swiat " \
+                "union select {} from kraj)".format(sum_query_string(with_total=True),
+                                                    sum_union_query_string(with_total=True),
+                                                    sum_union_query_string(with_total=True))
+        normal_data, percent_data = get_standard_results(query)
+        filterable_data = normal_data
 
-# class Swiat(Resource):
-#     # TODO
-#
+        ret = {
+            'scope': {
+                'name': 'Wyniki wyborów',
+                'type': 'Sumaryczne wyniki wyborów w kraju i za granicą',
+                'location': '',
+                'href': False
+            },
+            'subScope': {
+                'type': 'państwo',
+                'href': False
+            },
+            'data': {
+                'normal': [{
+                    'label': 'Suma głosów',
+                    'data': normal_data
+                }],
+                'percent': [{
+                    'label': 'Procent głosów',
+                    'data': percent_data
+                }],
+                'filterable': filterable_data,
+            }
+        }
+        return jsonify(ret)
+
+class Swiat(Resource):
+    def get(self):
+        query = "select {} from swiat".format(sum_query_string(with_total=True))
+        normal_data, percent_data = get_standard_results(query)
+
+        query = "select \"Państwo\", {} from swiat " \
+                "group by \"Państwo\" order by \"Państwo\" asc".format(", ".join(["\"{}\"".format(e) for e in candidate_name_labels]))
+        filterable_data = get_filterable_results(query)
+
+        ret = {
+            'scope': {
+                'name': 'Świat',
+                'type': 'Wyniki zagraniczne',
+                'location': '',
+                'href': False
+            },
+            'subScope': {
+                'type': 'państwo',
+                'href': False
+            },
+            'data': {
+                'normal': [{
+                    'label': 'Suma głosów',
+                    'data': normal_data
+                }],
+                'percent': [{
+                    'label': 'Procent głosów',
+                    'data': percent_data
+                }],
+                'filterable': filterable_data,
+            }
+        }
+        return jsonify(ret)
+
 class Kraj(Resource):
     def get(self):
         query = "select {} from kraj".format(sum_query_string(with_total=True))
@@ -278,8 +345,8 @@ class Gmina(Resource):
 # routes
 
 
-# api.add_resource(Ogolne, '/')
-# api.add_resource(Swiat, '/swiat')
+api.add_resource(Ogolne, '/')
+api.add_resource(Swiat, '/swiat')
 api.add_resource(Kraj, '/kraj')
 api.add_resource(Wojewodztwo, '/wojewodztwo/<id>')
 api.add_resource(Okreg, '/okreg/<id>')
