@@ -20,6 +20,12 @@ Chart.defaults.global.defaultFontSize = 12;
 Chart.defaults.global.defaultFontColor = '#202020';
 Chart.defaults.global.defaultFontFamily = "'Roboto Mono', monospace";
 
+const root = '';
+const useHash = false;
+// const hash = '#!';
+
+let router = new Navigo(root, useHash);
+
 
 // data for application
 
@@ -676,30 +682,74 @@ const toggleExpandable = (event, expandableName) => {
     }
 };
 
-const setScoresType = (event, type) => {
-    event.preventDefault();
+const setChartScores = (event=false, type='percent') => {
+    if(event) {
+        event.preventDefault();
+    }
     // TODO: Remove redundancy (currentVisibleData may not be necessary)
     currentVisibleData.chart.data.datasets = currentApiResponse.data[type];
     chart.data = currentVisibleData.chart.data;
     chart.update();
 };
 
-const setMenuListItems = apiResponse => {
-    if (apiResponse.scope.href) {
-        optionalMenuItems[0].children[0].innerText = `Wybierz: ${apiResponse.scope.type}`;
-        optionalMenuItems[0].children[0].href = apiResponse.scope.href;
+const setMenuListItems = () => {
+    if (currentApiResponse.scope.href) {
+        optionalMenuItems[0].children[0].innerText = `Wybierz: ${currentApiResponse.scope.type}`;
+        optionalMenuItems[0].children[0].href = currentApiResponse.scope.href;
         optionalMenuItems[0].classList.add('visible');
     } else {
         optionalMenuItems[0].classList.remove('visible');
     }
-    if (apiResponse.subScope.href) {
-        optionalMenuItems[1].children[0].innerText = `Wybierz: ${apiResponse.subScope.type}`;
-        optionalMenuItems[1].children[0].href = apiResponse.subScope.href;
+    if (currentApiResponse.subScope.href) {
+        optionalMenuItems[1].children[0].innerText = `Wybierz: ${currentApiResponse.subScope.type}`;
+        optionalMenuItems[1].children[0].href = currentApiResponse.subScope.href;
         optionalMenuItems[1].classList.add('visible');
     } else {
         optionalMenuItems[1].classList.remove('visible');
     }
 };
+
+const setScopes = () => {
+    currentVisibleData.scope = currentApiResponse.scope;
+    currentVisibleData.subScope = currentApiResponse.subScope;
+
+    document.getElementById('result-name')
+        .innerText = currentVisibleData.scope.name;
+    document.getElementById('result-type')
+        .innerText = `${currentVisibleData.scope.type} ${currentVisibleData.scope.location}`;
+};
+
+const updateAllData = () => {
+    setScopes();
+    setChartScores();
+    closeExpandables();
+    setMenuListItems();
+    router.updatePageLinks();
+};
+
+
+// routes
+
+
+router.on({
+    '/listy/:path': params => {
+    //    TODO
+    },
+    '/:resource': params => {
+        console.log(`GET /api/${params.resource}`);
+        fetch(`/api/${params.resource}`)
+            .then(res => res.json())
+            .then(res => currentApiResponse = res)
+            .then(updateAllData);
+    },
+    '/': params => {
+        console.log(`GET /api/${params.resource}`);
+        fetch(`/api/`)
+            .then(res => res.json())
+            .then(res => currentApiResponse = res)
+            .then(updateAllData);
+    }
+}).resolve();
 
 
 // app main
@@ -707,11 +757,11 @@ const setMenuListItems = apiResponse => {
 
 // filtering scores
 document.getElementById('score-percent')
-    .addEventListener('click', e => setScoresType(e, 'percent'));
+    .addEventListener('click', e => setChartScores(e, 'percent'));
 document.getElementById('score-count')
-    .addEventListener('click', e => setScoresType(e, 'normal'));
+    .addEventListener('click', e => setChartScores(e, 'normal'));
 document.getElementById('score-filter')
-    .addEventListener('click', e => setScoresType(e, 'filterable'));
+    .addEventListener('click', e => setChartScores(e, 'filterable'));
 // menus opening and closing, content
 document.getElementById('search-btn')
     .addEventListener('click', e => toggleExpandable(e, 'search'));
@@ -719,11 +769,7 @@ document.getElementById('menu-btn')
     .addEventListener('click', e => toggleExpandable(e, 'menu'));
 
 // TODO: Move to function
-document.getElementById('result-name')
-    .innerText = currentVisibleData.scope.name;
-document.getElementById('result-type')
-    .innerText = `${currentVisibleData.scope.type}, ${currentVisibleData.scope.location}`;
 
 // init
-chart.update();
-setMenuListItems(currentApiResponse);
+updateAllData();
+router.navigate('/kraj');
