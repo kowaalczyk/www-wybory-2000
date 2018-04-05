@@ -26,7 +26,7 @@ app = Flask(__name__, static_folder='', static_url_path='')
 api = Api(app)
 
 
-# helpers
+# db helpers
 
 
 def get_cursor():
@@ -42,18 +42,28 @@ def dict_factory(cursor, row):
     return d
 
 
+def query_string(with_total=False):
+    arr = ["\"{}\"".format(x) for x in candidate_name_labels]
+    if with_total:
+        arr.append('sum(Głosy_ważne)')
+    return ', '.join(arr)
+
+
 def sum_query_string(with_total=False):
     arr = ["sum(\"{}\")".format(x) for x in candidate_name_labels]
-    if (with_total):
+    if with_total:
         arr.append('sum(Głosy_ważne)')
     return ', '.join(arr)
 
 
 def sum_union_query_string(with_total=False):
     arr = ["sum(\"{}\") as \"{}\"".format(x, x) for x in candidate_name_labels]
-    if (with_total):
+    if with_total:
         arr.append('sum(\"Głosy_ważne\") as \"Głosy_ważne\"')
     return ', '.join(arr)
+
+
+# db queries
 
 
 def get_standard_results(query):
@@ -70,7 +80,6 @@ def get_standard_results(query):
 
 
 def get_filterable_results(query):
-    print(query)
     cur = get_cursor()
     cur.execute(query)
     rows = cur.fetchall()
@@ -86,6 +95,39 @@ def get_location_rows(key, val):
     return cur.fetchall()
 
 
+def get_wojewodztwa():
+    cur = get_cursor()
+    cur.execute('select * from wojewodztwa order by Kod_wojewodztwa asc')
+    rows = cur.fetchall()
+    return [{'href': "/wojewodztwo/{}".format(r['id']),
+             'text': r['Nazwa']} for r in rows]
+
+
+def get_okregi(id_woj=None):
+    cur = get_cursor()
+    if id_woj is not None:
+        cur.execute("select distinct Nr_okr from kraj where Kod_wojewodztwa=\"{}\" order by Nr_okr asc".format(id_woj))
+    else:
+        cur.execute("select distinct Nr_okr from kraj order by Nr_okr asc")
+    rows = cur.fetchall()
+    return [{'href': "/okreg/{}".format(r['Nr_okr']),
+             'text': "Okręg wyborczy #{}".format(r['Nr_okr'])} for r in rows]
+
+
+def get_gminy(id_okr=None):
+    cur = get_cursor()
+    if id_okr is not None:
+        cur.execute("select distinct Kod_gminy, Gmina from kraj where Nr_okr=\"{}\" order by Gmina asc".format(id_okr))
+    else:
+        cur.execute("select distinct Kod_gminy, Gmina from kraj order by Gmina asc")
+    rows = cur.fetchall()
+    return [{'href': "/gmina/{}".format(r['Kod_gminy']),
+             'text': "{}".format(r['Gmina'])} for r in rows]
+
+
+# response helpers
+
+
 def random_color():
     r = lambda: random.randint(0, 255)
     return [r(), r(), r()]
@@ -99,7 +141,9 @@ def border_color(color):
     return "rgba({}, {}, {}, {})".format(color[0], color[1], color[2], 1)
 
 
-def compose_response(scope, subscope, normal_data, percent_data, filterable_data):
+def compose_response(scope, subscope,
+                     normal_data, percent_data, filterable_data,
+                     submenu1=[], submenu2=[]):
     # set up colors
     normal_color = random_color()
     percent_color = random_color()
@@ -131,36 +175,15 @@ def compose_response(scope, subscope, normal_data, percent_data, filterable_data
                 'borderWidth': 1
             }],
             'filterable': filterable_data,
+        },
+        'subMenus': {
+            'submenu1': submenu1,
+            'submenu2': submenu2
         }
     }
 
 
-# resources
-
-
-class ListaWojewodztw(Resource):
-    def get(self):
-        cur = get_cursor()
-        cur.execute('select * from wojewodztwa order by Kod_wojewodztwa asc')
-        rows = cur.fetchall()
-        return jsonify(rows)
-
-
-class ListaOkregow(Resource):
-    def get(self):
-        cur = get_cursor()
-        cur.execute('select distinct Nr_okr from kraj order by Nr_okr asc')
-        rows = cur.fetchall()
-        ret = [d['Nr_okr'] for d in rows]
-        return jsonify(ret)
-
-
-class ListaGmin(Resource):
-    def get(self):
-        cur = get_cursor()
-        cur.execute('select distinct Kod_gminy, gmina from kraj order by Kod_gminy asc')
-        rows = cur.fetchall()
-        return jsonify(rows)
+# api resources
 
 
 class Ogolne(Resource):
@@ -240,11 +263,12 @@ class Kraj(Resource):
             },
             {
                 'type': 'wojewodztwo',
-                'href': '/listy/wojewodztwa'
+                'href': True
             },
             normal_data,
             percent_data,
-            filterable_data
+            filterable_data,
+            submenu2=get_wojewodztwa()
         )
         return jsonify(ret)
 
@@ -268,15 +292,17 @@ class Wojewodztwo(Resource):
                 'name': name,
                 'type': 'województwo',
                 'location': 'Polska',
-                'href': '/listy/wojewodztwa'
+                'href': True
             },
             {
                 'type': 'okręg wyborczy',
-                'href': '/listy/okregi'
+                'href': True
             },
             normal_data,
             percent_data,
-            filterable_data
+            filterable_data,
+            submenu1=get_wojewodztwa(),
+            submenu2=get_okregi(id)
         )
         return jsonify(ret)
 
@@ -300,15 +326,17 @@ class Okreg(Resource):
                 'name': "Okręg wyborczy #{}".format(id),
                 'type': 'okręg wyborczy',
                 'location': parent_scope_name,
-                'href': '/listy/okregi'
+                'href': True
             },
             {
                 'type': 'gmina',
-                'href': '/listy/gminy'
+                'href': True
             },
             normal_data,
             percent_data,
-            filterable_data
+            filterable_data,
+            submenu1=get_okregi(),
+            submenu2=get_gminy(id)
         )
         return jsonify(ret)
 
@@ -318,10 +346,12 @@ class Gmina(Resource):
         query = "select {} from kraj where \"Kod_gminy\"=\"{}\"".format(sum_query_string(with_total=True), id)
         normal_data, percent_data = get_standard_results(query)
 
-        query = "select min(Nr_obw) as Nr_obw, {} from kraj " \
+        query = "select Nr_obw, {} from kraj " \
                 "where \"Kod_gminy\"=\"{}\" " \
-                "order by Nr_obw asc".format(sum_query_string(), id)
+                "order by Nr_obw asc".format(query_string(), id)
         filterable_data = get_filterable_results(query)
+        for d in filterable_data:
+            d['']
 
         rows = get_location_rows("Kod_gminy", id)
         parent_scope_name = "{} okręg wyborczy #{}".format(rows[0]['Nazwa'], rows[0]['Nr_okr'])
@@ -332,7 +362,7 @@ class Gmina(Resource):
                 'name': current_scope_name,
                 'type': 'gmina',
                 'location': parent_scope_name,
-                'href': '/listy/gminy'
+                'href': True
             },
             {
                 'type': 'obwod',
@@ -340,12 +370,13 @@ class Gmina(Resource):
             },
             normal_data,
             percent_data,
-            filterable_data
+            filterable_data,
+            submenu1=get_gminy()
         )
         return jsonify(ret)
 
 
-# routes
+# api routes
 
 
 api.add_resource(Ogolne, '/api/')
@@ -354,9 +385,9 @@ api.add_resource(Kraj, '/api/kraj')
 api.add_resource(Wojewodztwo, '/api/wojewodztwo/<id>')
 api.add_resource(Okreg, '/api/okreg/<id>')
 api.add_resource(Gmina, '/api/gmina/<id>')
-api.add_resource(ListaWojewodztw, '/api/listy/wojewodztwa')
-api.add_resource(ListaOkregow, '/api/listy/okregi')
-api.add_resource(ListaGmin, '/api/listy/gminy')
+
+
+# other routes
 
 
 @app.route('/')

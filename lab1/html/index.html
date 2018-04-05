@@ -42,7 +42,8 @@
 
             <!-- CONTENT (GRAPH AND SWITCHES) -->
             <div class="kk-block-tmargin chart">
-                <canvas id="chart"></canvas>
+                <canvas id="chart" height="640px"></canvas>
+                <!-- this has to be fixed-height for the period of loading -->
             </div>
             <div class="kk-block-tmargin kk-horizontal kk-btns-separated">
                 <a class="kk-btn"
@@ -100,20 +101,36 @@
                         </a>
                     </li>
                     <li id="kk-optional-1" class="kk-optional">
-                        <a class="kk-btn kk-list-btn" data-navigo>
+                        <a class="kk-btn kk-list-btn">
 
                         </a>
                     </li>
                     <li id="kk-optional-2" class="kk-optional">
-                        <a class="kk-btn kk-list-btn" data-navigo>
+                        <a class="kk-btn kk-list-btn">
 
                         </a>
                     </li>
                     <li>
-                        <a class="kk-btn kk-list-btn" href="/about" data-navigo>
+                        <a class="kk-btn kk-list-btn" href="/info/about" data-navigo>
                             O aplikacji
                         </a>
                     </li>
+                </ul>
+            </div>
+            <div id="menu-subcontent-1"
+                 class="kk-container kk-expandable kk-optional">
+                <ul class="kk-list">
+                    <li>Woj 1</li>
+                    <li>Woj 2</li>
+                    <li>Woj 3</li>
+                </ul>
+            </div>
+            <div id="menu-subcontent-2"
+                 class="kk-container kk-expandable kk-optional">
+                <ul class="kk-list">
+                    <li>Gmina 1</li>
+                    <li>Gmina 2</li>
+                    <li>Gmina 3</li>
                 </ul>
             </div>
             <div id="search-content"
@@ -137,7 +154,7 @@
     <script src="../js/chart-2.7.1.js"></script>
 
     <!-- Navigo JS router -->
-    <script src="//unpkg.com/navigo@6"></script>
+    <script src="http://unpkg.com/navigo@6"></script>
 
     <!-- Main application script for the application -->
     <script src="../js/app.js"></script>

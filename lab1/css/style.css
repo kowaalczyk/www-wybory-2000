@@ -164,7 +164,7 @@ body.kk-flex-body {
 .chart {
     background-color: white;
     max-width: 100%;
-    min-height: 55vh; /* TODO: this is eyeballed, think of better layout */
+    min-height: 55vmax; /* TODO: this is eyeballed, think of better layout */
 }
 
 .chart > * {
@@ -234,6 +234,9 @@ a.kk-btn:active, a.kk-btn:hover {
     position: absolute;
     bottom: calc(var(--kk-footer-height));
     left: inherit;
+    max-height: calc(100vh - var(--kk-footer-height));
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .kk-optional {
@@ -254,3 +257,4 @@ a.kk-btn.kk-list-btn {
     padding: auto;
     border-top: var(--kk-btn-border);
 }
+
