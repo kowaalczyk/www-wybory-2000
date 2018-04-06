@@ -223,9 +223,11 @@ const setChartScores = (event = false, type = 'percent') => {
 
 const subMenuItemHtml = (href, text) => {
     return `
-        <a class="kk-btn kk-list-btn" href="${href}" data-navigo>
-            ${text}
-        </a>
+        <li>
+            <a class="kk-btn kk-list-btn" href="${href}" data-navigo>
+                ${text}
+            </a>
+        </li>
     `
 };
 
@@ -234,8 +236,9 @@ const setMenuListItems = () => {
         optionalMenuItems[0].children[0].innerText = `Wybierz: ${currentApiResponse.scope.type}`;
         optionalMenuItems[0].children[0].href = currentApiResponse.scope.href;
 
-        let subMenuHtml = currentApiResponse.subMenus.submenu1
-            .reduce((total, el) => total+subMenuItemHtml(el.href, el.text));
+        let subMenuHtml = ' ';
+        currentApiResponse.subMenus.submenu1
+            .map((el) => subMenuHtml += subMenuItemHtml(el.href, el.text));
 
         expandables.submenu1.innerHTML = subMenuHtml;
         optionalMenuItems[0].classList.add('visible');
@@ -246,8 +249,9 @@ const setMenuListItems = () => {
         optionalMenuItems[1].children[0].innerText = `Wybierz: ${currentApiResponse.subScope.type}`;
         optionalMenuItems[1].children[0].href = currentApiResponse.subScope.href;
 
-        let subMenuHtml = currentApiResponse.subMenus.submenu2
-            .reduce((total, el) => total+subMenuItemHtml(el.href, el.text));
+        let subMenuHtml = ' ';
+        currentApiResponse.subMenus.submenu2
+            .map((el) => subMenuHtml += subMenuItemHtml(el.href, el.text));
 
         expandables.submenu2.innerHTML = subMenuHtml;
         optionalMenuItems[1].classList.add('visible');
