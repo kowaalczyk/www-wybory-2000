@@ -350,8 +350,6 @@ class Gmina(Resource):
                 "where \"Kod_gminy\"=\"{}\" " \
                 "order by Nr_obw asc".format(query_string(), id)
         filterable_data = get_filterable_results(query)
-        for d in filterable_data:
-            d['']
 
         rows = get_location_rows("Kod_gminy", id)
         parent_scope_name = "{} okręg wyborczy #{}".format(rows[0]['Nazwa'], rows[0]['Nr_okr'])
