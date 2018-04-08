@@ -1,5 +1,5 @@
 .idea
 venv
-lab1/raw_data
+raw_data/xls
 *.zip
-lab1/db/*.db
+db/*.db

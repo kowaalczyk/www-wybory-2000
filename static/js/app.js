@@ -304,8 +304,8 @@ router.on({
             .then(res => currentApiResponse = res)
             .then(updateAllData);
     },
-    '/': params => {
-        console.log(`GET /api/${params.resource}`);
+    '/': () => {
+        console.log(`GET /api/`);
         fetch(`/api/`)
             .then(res => res.json())
             .then(res => currentApiResponse = res)
