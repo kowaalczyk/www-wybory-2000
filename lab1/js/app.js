@@ -168,7 +168,7 @@ let currentVisibleData = {
     }
 };
 
-const chartCanvas = document.getElementById('chart')
+const chartCanvas = document.getElementById('chart');
 
 let chart = new Chart(
     chartCanvas,
