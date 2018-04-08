@@ -1,7 +1,7 @@
 # Wybory 2000  
 WWW Applications project #1, University of Warsaw, spring semester 2017-18
 
-![iphone x screenshot](https://imgur.com/a/LkstC "Wybory 2000 - iphone x screenshot")
+![iphone x screenshot](https://i.imgur.com/C50ovjA.png "Wybory 2000 - iphone x screenshot")
 
 
 ## Assignment  
