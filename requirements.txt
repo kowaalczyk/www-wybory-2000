@@ -29,6 +29,6 @@ requests==2.9.1
 service-identity==16.0.0
 six==1.10.0
 stdeb==0.8.5
-Twisted==16.0.0
+Twisted==19.7.0
 urllib3==1.13.1
 zope.interface==4.1.3
