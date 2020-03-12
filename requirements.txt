@@ -12,7 +12,7 @@ M2Crypto==0.22.6rc4
 ndg-httpsclient==0.4.0
 numpy==1.11.0
 PAM==0.4.2
-psutil==5.4.3
+psutil==5.6.6
 pyasn1==0.1.9
 pyasn1-modules==0.0.7
 pycurl==7.43.0
